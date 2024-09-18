@@ -1,0 +1,27 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- release
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- script: |
+   cp .env.prod .env.local
+   cp .env.prod .env
+   cat .env.local
+  displayName: 'copy environment files'
+
+- script: |
+    yarn install
+    yarn package
+  displayName: 'Build & Pack'
+
+- script: |
+    npm i firebase-tools -g
+    firebase deploy --token $(FIREBASE_TOKEN)
+  displayName: 'Firebase deploy'
